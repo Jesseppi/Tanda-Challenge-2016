@@ -1,3 +1,5 @@
+	require_relative 'menu_class'
+
 	@EMPLOYEES = ["Alex", "Jake", "Tasmin", "Josh", "Adam", "Wayne", "Dave", "Bri", "Scott", "Marissa"]
 	@EMPLOYEES_WAGES = [17.79, 19.10, 17.29, 18.47, 17.29, 17.29, 17.29, 19.10, 18.47, 20.13]
 	@EMPLOYEES_REQUIRED_SHIFT = [4,5,4,8,8,5,6,9,4,7]
@@ -8,37 +10,50 @@
 
 
 	@ASSOCIATIVE_EMPLOYEE_SHIFT_BLOCK_COST = {"Alex" => 71.16, "Jake" => 95.50, "Tasmin" => 69.16, "Josh" => 147.76, "Adam" => 138.32, "Wayne" => 86.45, "Dave" => 103.74, "Bri" => 171.90, "Scott" => 73.88, "Marissa" => 140.91}
+	@ASSOCIATIVE_EMPLOYEE_SHIFT_LENGTH = {"Alex" => 4, "Jake" => 5, "Tasmin" => 4, "Josh" => 8, "Adam" => 8, "Wayne" => 5, "Dave" => 6, "Bri" => 9, "Scott" => 4, "Marissa" => 7}
 	@ASSOCIATIVE_EMPLOYEE_SHIFT_BLOCK_COST_double = {"Alex" => 71.16, "Alex2" => 71.16, "Jake" => 95.50, "Jake2" => 95.50, "Tasmin" => 69.16, "Tasmin2" => 69.16, "Josh" => 147.76, "Josh2" => 147.76, "Adam" => 138.32, "Adam2" => 138.32, "Wayne" => 86.45, "Wayne2" => 86.45, "Dave" => 103.74, "Dave2" => 103.74, "Bri" => 171.90, "Bri2" => 171.90, "Scott" => 73.88, "Scott2" => 73.88, "Marissa" => 140.91, "Marissa2" => 140.91 }
 	@ASSOCIATIVE_EMPLOYEE_SHIFT_BLOCK_COST_triple = {"Alex" => 71.16, "Alex2" => 71.16, "Alex3" => 71.16, "Jake" => 95.50, "Jake2" => 95.50, "Jake3" => 95.50, "Tasmin" => 69.16, "Tasmin2" => 69.16, "Tasmin3" => 69.16, "Josh" => 147.76, "Josh2" => 147.76, "Josh3" => 147.76, "Adam" => 138.32, "Adam2" => 138.32, "Adam3" => 138.32, "Wayne" => 86.45, "Wayne2" => 86.45, "Wayne3" => 86.45, "Dave" => 103.74, "Dave2" => 103.74, "Dave3" => 103.74, "Bri" => 171.90, "Bri2" => 171.90, "Bri3" => 171.90, "Scott" => 73.88, "Scott2" => 73.88, "Scott3" => 73.88, "Marissa" => 140.91, "Marissa2" => 140.91, "Marissa3" => 140.91 }
 	@BUDGET = 800.00
 
-	def print_arraysyeah
+	$associative_closest_to_budget = 0
+	$names_on_shift = []
+	$hours_worked = []
+	$roles_on_shift = []
+
+	def printStoredArrays
 		i = 0	
 		loop do
-			print " #{@EMPLOYEES[i]} , HOURLY WAGE = $#{@EMPLOYEES_WAGES[i]}, REQUIRED HOURS = #{@EMPLOYEES_REQUIRED_SHIFT[i]}, SHIFT BLOCK COST = $#{@EMPLOYEE_SHIFT_BLOCK_COST[i]}"	
+			print " EMPLOYEE: #{@EMPLOYEES[i]} , HOURLY WAGE = $#{@EMPLOYEES_WAGES[i]}, REQUIRED HOURS = #{@EMPLOYEES_REQUIRED_SHIFT[i]}, SHIFT BLOCK COST = $#{@EMPLOYEE_SHIFT_BLOCK_COST[i]}"	
 			i+=1
 			puts
 			break if i==10
 		end	
 	end
 
-		def checkRoleRatio(roles)
+	def printAnyArray(array, objectDesc)
+		arrayLength = array.length
+		i = 0
+		loop do
+			print " #{objectDesc}: #{array[i]}, ROLE:#{@ASSOCIATIVE_EMPLOYEE_TYPE[array[i]]}, HOURS WORKED:#{@ASSOCIATIVE_EMPLOYEE_SHIFT_LENGTH[array[i]]} "
+			i+=1
+			puts
+			break if i == arrayLength
+		end
+	end
+
+	def checkRoleRatio(roles)
 		waiters = roles.count("W")
-		# puts waiters
 		kitchenhands = roles.count("KH")
-		# puts kitchenhands
 		if waiters != 0 && kitchenhands != 0 
 			shiftratio = waiters.to_f/kitchenhands.to_f
 		else
 			shiftratio = 0
 		end
-		# puts shiftratio
 		return shiftratio
 	end
 
 	def checkIfEmployeeCanBeAdded(role, rolesArray)
 		ratio = checkRoleRatio(rolesArray)
-		# puts role
 		if role == "W" || role == "KHW"
 			return true
 		elsif role == "KH" && ratio > 2
@@ -49,34 +64,44 @@
 			
 	end
 
-	$associative_closest_to_budget = 0
-	$names_on_shift = []
-	$roles_on_shift = []
-
-	def associative_recursive_addition(numbers, budget, numbersAdded =[], namesAdded = [], rolesAdded = [])
+	
+	 	###### find max hours possible within budget
+	def createRosterSimple(numbers, budget, numbersAdded =[], namesAdded = [], rolesAdded = [], hoursWorked = [])
 
 		recursive_sum = numbersAdded.inject(0, :+)
-		puts recursive_sum
-		print "numbers currently in array "
-		print numbersAdded
-		puts
 		
+  		if recursive_sum > 0 && recursive_sum > 300 && recursive_sum <= budget
+  					if recursive_sum > $associative_closest_to_budget
+  						$associative_closest_to_budget = recursive_sum
+  						$names_on_shift = namesAdded
+  						$roles_on_shift =  rolesAdded
+  						$hours_worked = hoursWorked
+  					end
+  				elsif recursive_sum > budget
+  					return  						
+  				end
+	
+  		numbers.each_with_index do |(k,v),index|
+  			r =  @ASSOCIATIVE_EMPLOYEE_TYPE[k]
+  			h = @ASSOCIATIVE_EMPLOYEE_SHIFT_LENGTH[k]
+    		# remaining = numbers.drop(index+1)
+    		remaining = numbers
+    		createRosterSimple(remaining, budget, numbersAdded+[v], namesAdded + [k], rolesAdded + [r], hoursWorked + [h])    		 	
+  		end
+	end	
+
+	 	###### find max hours possible within budget abiding by a ratio of 2(W):1(KH)
+	def createRosterRatio(numbers, budget, numbersAdded =[], namesAdded = [], rolesAdded = [])
+
+		recursive_sum = numbersAdded.inject(0, :+)
+				
   		if recursive_sum > 0
   			if recursive_sum > 500 
   				if recursive_sum <= budget
-  					puts "we got to here"
-  					# print numbersAdded
-  					# print namesAdded
-  					# print "    ....... "
-  					# print recursive_sum
-  					# puts 
   					if recursive_sum > $associative_closest_to_budget
   						$associative_closest_to_budget = recursive_sum
-  						puts "$associative_closest_to_budget"
   						$names_on_shift = namesAdded
-  						puts $names_on_shift
   						$roles_on_shift =  rolesAdded
-  						puts $roles_on_shift
   					end
   				elsif recursive_sum > budget
   					return  						
@@ -87,30 +112,102 @@
 	
   		numbers.each_with_index do |(k,v),index|
   			r =  @ASSOCIATIVE_EMPLOYEE_TYPE[k]
-  			# puts checkIfEmployeeCanBeAdded(r, rolesAdded) ? "can be added":"*******"
-    		# puts"#{index}"
-    		# puts k
-    		# puts v
     		remaining = numbers.drop(index+1)
     		if checkIfEmployeeCanBeAdded(r, rolesAdded)
-    			
-    			# print "numbers currently in array "
-    			# print numbersAdded
-    			associative_recursive_addition(remaining, budget, numbersAdded+[v], namesAdded + [k], rolesAdded + [r])
+    			createRosterRatio(remaining, budget, numbersAdded+[v], namesAdded + [k], rolesAdded + [r])
     		end
     		 	
   		end
 	end	
 
- 	###### associative code
-  	associative_recursive_addition(@ASSOCIATIVE_EMPLOYEE_SHIFT_BLOCK_COST,@BUDGET)
-  	puts("the closest combination to budget amounted to: ")
-  	print $associative_closest_to_budget
-  	puts
-  	print $names_on_shift
-  	puts
-  	print  $roles_on_shift  	
-  	puts
+
+
+ 
+
+ 	def timesheetMenu
+ 		exit = false
+ 		while(exit != true)
+ 			Menu.printWelcomeMenu
+ 			userChoice = Menu.getUserNumericalChoice(5,9) 
+ 			case userChoice
+ 			when 1
+ 				puts
+ 				printStoredArrays
+ 				createRosterSimple(@ASSOCIATIVE_EMPLOYEE_SHIFT_BLOCK_COST,@BUDGET) 		
+ 				puts
+ 			when 2
+ 				puts
+ 				Menu.printBreakLine("*",40)
+ 				puts
+ 				createRosterSimple(@ASSOCIATIVE_EMPLOYEE_SHIFT_BLOCK_COST,@BUDGET)
+ 				print ("the closest employee roster to $#{@BUDGET} amounted to: ")
+  				print $associative_closest_to_budget
+  				puts
+  				printAnyArray($names_on_shift, "EMPLOYEE")
+  				Menu.printBreakLine("*",40)
+  				puts
+  				puts
+  			when 3
+  				puts
+ 				Menu.printBreakLine("*",40)
+ 				puts
+ 				createRosterSimple(@ASSOCIATIVE_EMPLOYEE_SHIFT_BLOCK_COST_double,@BUDGET)
+ 				print ("the closest employee roster to $#{@BUDGET} amounted to: ")
+  				print $associative_closest_to_budget
+  				puts
+  				printAnyArray($names_on_shift, "EMPLOYEE")
+  				Menu.printBreakLine("*",40)
+  				puts
+  				puts
+  			when 4
+  				puts
+ 				Menu.printBreakLine("*",40)
+ 				puts
+ 				createRosterSimple(@ASSOCIATIVE_EMPLOYEE_SHIFT_BLOCK_COST_triple,@BUDGET)
+ 				print ("the closest employee roster to $#{@BUDGET} amounted to: ")
+  				print $associative_closest_to_budget
+  				puts
+  				printAnyArray($names_on_shift, "EMPLOYEE")
+  				Menu.printBreakLine("*",40)
+  				puts
+  				puts
+  			when 5 
+  				puts
+ 				Menu.printBreakLine("*",40)
+ 				puts
+ 				createRosterRatio(@ASSOCIATIVE_EMPLOYEE_SHIFT_BLOCK_COST,@BUDGET)
+ 				print ("the closest employee roster to $#{@BUDGET} amounted to: ")
+  				print $associative_closest_to_budget
+  				puts
+  				printAnyArray($names_on_shift, "EMPLOYEE")
+  				Menu.printBreakLine("*",40)
+  				puts
+  				puts
+
+ 			when 9		
+ 				print "exit case reached"
+ 				exit = true
+ 				break
+ 			else
+ 				exit = true
+ 			end
+ 		end
+ 	end
+
+ 	Menu.printWelcomeText
+ 	timesheetMenu
+
+  	# createRosterSimple(@ASSOCIATIVE_EMPLOYEE_SHIFT_BLOCK_COST,@BUDGET)
+  	# puts("the closest combination of hours to budget amounted to: ")
+  	# print "$"
+  	# print $associative_closest_to_budget
+  	
+  	# puts
+  	# print $names_on_shift
+  	# puts
+  	# print  $roles_on_shift  	
+  	# puts
+  	# print $hours_worked
 
   	# associative_recursive_addition(@ASSOCIATIVE_EMPLOYEE_SHIFT_BLOCK_COST_triple,@BUDGET)
   	# puts("the closest combination to budget amounted to: ")
