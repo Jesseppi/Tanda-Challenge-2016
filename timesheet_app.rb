@@ -56,12 +56,15 @@
 	def associative_recursive_addition(numbers, budget, numbersAdded =[], namesAdded = [], rolesAdded = [])
 
 		recursive_sum = numbersAdded.inject(0, :+)
+		puts recursive_sum
+		print "numbers currently in array "
 		print numbersAdded
 		puts
 		
   		if recursive_sum > 0
-  			if recursive_sum > 790 
+  			if recursive_sum > 500 
   				if recursive_sum <= budget
+  					puts "we got to here"
   					# print numbersAdded
   					# print namesAdded
   					# print "    ....... "
@@ -69,8 +72,11 @@
   					# puts 
   					if recursive_sum > $associative_closest_to_budget
   						$associative_closest_to_budget = recursive_sum
+  						puts "$associative_closest_to_budget"
   						$names_on_shift = namesAdded
+  						puts $names_on_shift
   						$roles_on_shift =  rolesAdded
+  						puts $roles_on_shift
   					end
   				elsif recursive_sum > budget
   					return  						
@@ -86,11 +92,13 @@
     		# puts k
     		# puts v
     		remaining = numbers.drop(index+1)
-    		# if checkIfEmployeeCanBeAdded(r, rolesAdded)
-    		# 	puts "in"
-    		# 	print numbersAdded
-    		# end
-    		 	associative_recursive_addition(remaining, budget, numbersAdded+[v], namesAdded + [k], rolesAdded + [r])
+    		if checkIfEmployeeCanBeAdded(r, rolesAdded)
+    			
+    			# print "numbers currently in array "
+    			# print numbersAdded
+    			associative_recursive_addition(remaining, budget, numbersAdded+[v], namesAdded + [k], rolesAdded + [r])
+    		end
+    		 	
   		end
 	end	
 
