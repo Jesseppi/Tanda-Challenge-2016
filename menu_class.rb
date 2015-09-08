@@ -29,7 +29,7 @@ class Menu
 				userChoice = 0
 			end
 			if userChoice.to_i == exitChoice
-				return userChoice
+				return userChoice.to_i
 			elsif (userChoice.to_i > maxChoice || userChoice.to_i< 1)
 				puts errorMessage
 			end					
