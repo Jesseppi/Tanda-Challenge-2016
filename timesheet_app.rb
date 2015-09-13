@@ -1,9 +1,11 @@
 	require_relative 'menu_class'
+  require_relative 'custom_roster_class'
 
 	$EMPLOYEES = ["Alex", "Jake", "Tasmin", "Josh", "Adam", "Wayne", "Dave", "Bri", "Scott", "Marissa"]
 	$EMPLOYEES_WAGES = [17.79, 19.10, 17.29, 18.47, 17.29, 17.29, 17.29, 19.10, 18.47, 20.13]
 	$EMPLOYEES_REQUIRED_SHIFT = [4,5,4,8,8,5,6,9,4,7]
 	$EMPLOYEE_SHIFT_BLOCK_COST = [71.16, 95.50, 69.16, 147.76, 138.32, 86.45, 103.74, 171.90, 73.88, 140.91]
+  $EMPLOYEE_TYPE = ["KH","KHW","KH","W","KHW","KH","KH","W","W","KHW"]
 
 	$ASSOCIATIVE_EMPLOYEE_TYPE = {"Alex" => "KH", "Jake" => "KHW", "Tasmin" => "KH", "Josh" => "W", "Adam" => "KHW", "Wayne" => "KH", "Dave" => "KH", "Bri" => "W", "Scott" => "W", "Marissa" => "KHW"}
 	$ASSOCIATIVE_EMPLOYEE_TYPE.default = "no such person"
@@ -15,7 +17,7 @@
 	$ASSOCIATIVE_EMPLOYEE_SHIFT_BLOCK_COST_triple = {"Alex" => 71.16, "Alex2" => 71.16, "Alex3" => 71.16, "Jake" => 95.50, "Jake2" => 95.50, "Jake3" => 95.50, "Tasmin" => 69.16, "Tasmin2" => 69.16, "Tasmin3" => 69.16, "Josh" => 147.76, "Josh2" => 147.76, "Josh3" => 147.76, "Adam" => 138.32, "Adam2" => 138.32, "Adam3" => 138.32, "Wayne" => 86.45, "Wayne2" => 86.45, "Wayne3" => 86.45, "Dave" => 103.74, "Dave2" => 103.74, "Dave3" => 103.74, "Bri" => 171.90, "Bri2" => 171.90, "Bri3" => 171.90, "Scott" => 73.88, "Scott2" => 73.88, "Scott3" => 73.88, "Marissa" => 140.91, "Marissa2" => 140.91, "Marissa3" => 140.91 }
 	$BUDGET = 800.00
 
-	$associative_closest_to_budget = 0
+	$closest_to_budget = 0
 	$names_on_shift = []
 	$hours_worked = []
 	$roles_on_shift = []
@@ -23,12 +25,19 @@
 	def printStoredArrays
 		i = 0	
 		loop do
-			print " EMPLOYEE: #{$EMPLOYEES[i]} , HOURLY WAGE = $#{$EMPLOYEES_WAGES[i]}, REQUIRED HOURS = #{$EMPLOYEES_REQUIRED_SHIFT[i]}, SHIFT BLOCK COST = $#{$EMPLOYEE_SHIFT_BLOCK_COST[i]}"	
+			print " EMPLOYEE: #{$EMPLOYEES[i]} , ROLE: #{$EMPLOYEE_TYPE[i]}, HOURLY WAGE = $#{$EMPLOYEES_WAGES[i]}, REQUIRED HOURS = #{$EMPLOYEES_REQUIRED_SHIFT[i]}, SHIFT BLOCK COST = $#{$EMPLOYEE_SHIFT_BLOCK_COST[i]}"	
 			i+=1
 			puts
 			break if i==10
 		end	
 	end
+
+  def zeroOutArrays
+    $closest_to_budget = 0
+    $names_on_shift = []
+    $hours_worked = []
+    $roles_on_shift = []
+  end
 
 	def printAnyArray(array, objectDesc)
 		arrayLength = array.length
@@ -65,14 +74,14 @@
 	end
 
 	
-	 	###### find max hours possible within budget
+	###### find max hours possible within budget
 	def createRosterSimple(numbers, budget, numbersAdded =[], namesAdded = [], rolesAdded = [], hoursWorked = [])
 
 		recursive_sum = numbersAdded.inject(0, :+)
 		
   		if recursive_sum > 0 && recursive_sum > 300 && recursive_sum <= budget
-  					if recursive_sum > $associative_closest_to_budget
-  						$associative_closest_to_budget = recursive_sum
+  					if recursive_sum > $closest_to_budget
+  						$closest_to_budget = recursive_sum
   						$names_on_shift = namesAdded
   						$roles_on_shift =  rolesAdded
   						$hours_worked = hoursWorked
@@ -98,8 +107,8 @@
   		if recursive_sum > 0
   			if recursive_sum > 500 
   				if recursive_sum <= budget
-  					if recursive_sum > $associative_closest_to_budget
-  						$associative_closest_to_budget = recursive_sum
+  					if recursive_sum > $closest_to_budget
+  						$closest_to_budget = recursive_sum
   						$names_on_shift = namesAdded
   						$roles_on_shift =  rolesAdded
   					end
@@ -130,7 +139,7 @@
  			
       puts
       Menu.printWelcomeMenu
- 			userChoice = Menu.getUserNumericalChoice(5,9) 
+ 			userChoice = Menu.getUserNumericalChoice(6,9) 
       puts
 
  			case userChoice
@@ -145,51 +154,66 @@
  				puts
  				createRosterSimple($ASSOCIATIVE_EMPLOYEE_SHIFT_BLOCK_COST,$BUDGET)
  				print ("the closest employee roster to $#{$BUDGET} amounted to: ")
-  				print $associative_closest_to_budget
-  				puts
-  				printAnyArray($names_on_shift, "EMPLOYEE")
-  				Menu.printBreakLine("*",40)
-  				puts
-  				puts
+  			print $closest_to_budget
+  			puts
+  			printAnyArray($names_on_shift, "EMPLOYEE")
+  			Menu.printBreakLine("*",40)
+        zeroOutArrays
+  			puts
+  			puts
           
-  			when 3
-  				puts
+  		when 3
+  			puts
  				Menu.printBreakLine("*",40)
  				puts
  				createRosterSimple($ASSOCIATIVE_EMPLOYEE_SHIFT_BLOCK_COST_double,$BUDGET)
  				print ("the closest employee roster to $#{$BUDGET} amounted to: ")
-  				print $associative_closest_to_budget
-  				puts
-  				printAnyArray($names_on_shift, "EMPLOYEE")
-  				Menu.printBreakLine("*",40)
-  				puts
-  				puts
+  			print $closest_to_budget
+  			puts
+  			printAnyArray($names_on_shift, "EMPLOYEE")
+  			Menu.printBreakLine("*",40)
+        zeroOutArrays
+  			puts
+  			puts
 
-  			when 4
-  				puts
+  		when 4
+  			puts
  				Menu.printBreakLine("*",40)
  				puts
  				createRosterSimple($ASSOCIATIVE_EMPLOYEE_SHIFT_BLOCK_COST_triple,$BUDGET)
  				print ("the closest employee roster to $#{$BUDGET} amounted to: ")
-  				print $associative_closest_to_budget
-  				puts
-  				printAnyArray($names_on_shift, "EMPLOYEE")
-  				Menu.printBreakLine("*",40)
-  				puts
-  				puts
+  			print $closest_to_budget
+  			puts
+  			printAnyArray($names_on_shift, "EMPLOYEE")
+  			Menu.printBreakLine("*",40)
+        zeroOutArrays
+  			puts
+  			puts
 
-  			when 5 
+  		when 5 
   			puts
  				Menu.printBreakLine("*",40)
  				puts
  				createRosterRatio($ASSOCIATIVE_EMPLOYEE_SHIFT_BLOCK_COST,$BUDGET)
  				print ("the closest employee roster to $#{$BUDGET} amounted to: ")
-  				print $associative_closest_to_budget
-  				puts
-  				printAnyArray($names_on_shift, "EMPLOYEE")
-  				Menu.printBreakLine("*",40)
-  				puts
-  				puts
+  			print $closest_to_budget
+  			puts
+  			printAnyArray($names_on_shift, "EMPLOYEE")
+  			Menu.printBreakLine("*",40)
+        zeroOutArrays
+  			puts
+  			puts
+
+      when 6
+        print "How many employees do you have to enter?:"
+        numberOfEmployees = Menu.getUserNumericalChoice(5,9)
+        customRoster = CustomRoster.new(numberOfEmployees,100)
+        customRoster.getEmployeeDetails
+        puts
+        Menu.printBreakLine("*",40)
+        puts
+        customRoster.createRosterSimple(customRoster(@CUSTOM_EMPLOYEE_SHIFT_BLOCK_COST),customRoster(@customBudget))
+        
 
  			when 9		
  				print "exit case reached"
@@ -202,15 +226,31 @@
  		end
  	end
 
- 	Menu.printWelcomeText
- 	timesheetMenu
+  # Running Code ----------------------------
+ 	# Menu.printWelcomeText
+ 	# timesheetMenu
+  customEmplopyees = CustomRoster.new(2,100) 
+  # print customEmplopyees.instance_variable_get("@CUSTOM_EMPLOYEES_ROLES")
+  # print customEmplopyees.instance_variable_get("@CUSTOM_EMPLOYEES_REQUIRED_SHIFT")
+  # print customEmplopyees.instance_variable_get("@CUSTOM_EMPLOYEES")
+  # print customEmplopyees.instance_variable_get("@CUSTOM_EMPLOYEES_WAGES")
+  blockCostArray = customEmplopyees.instance_variable_get("@CUSTOM_EMPLOYEE_SHIFT_BLOCK_COST")
+  print blockCostArray
+  customBudget = customEmplopyees.instance_variable_get("@customBudget")
+  # print customBudget
+  customEmplopyees.createRosterSimple(blockCostArray,customBudget)
+  print customEmplopyees.instance_variable_get("@closest_to_budget")
+  print customEmplopyees.instance_variable_get("@names_on_shift")
+  print customEmplopyees.instance_variable_get("@roles_on_shift")
+  print customEmplopyees.instance_variable_get("@hours_worked")
 
-  
+  # customTest = CustomRoster.new(1,100)
+  # customTest.getEmployeeDetails 
 
   	# createRosterSimple(@ASSOCIATIVE_EMPLOYEE_SHIFT_BLOCK_COST,@BUDGET)
   	# puts("the closest combination of hours to budget amounted to: ")
   	# print "$"
-  	# print $associative_closest_to_budget
+  	# print $closest_to_budget
   	
   	# puts
   	# print $names_on_shift
@@ -221,7 +261,7 @@
 
   	# associative_recursive_addition(@ASSOCIATIVE_EMPLOYEE_SHIFT_BLOCK_COST_triple,@BUDGET)
   	# puts("the closest combination to budget amounted to: ")
-  	# print $associative_closest_to_budget
+  	# print $closest_to_budget
   	# puts
   	# print $names_on_shift
   	# puts

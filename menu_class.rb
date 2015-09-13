@@ -13,6 +13,7 @@ class Menu
 		puts "3. Find the roster with max hours assuming 2 possible shifts per employee"
 		puts "4. Find the roster with max hours assuming 3 possible shifts per employee"
 		puts "5. Find the roster with max hours assuming a ratio of 2:1 Waiter to kitchen hands"
+		puts "6. Input your own employees"
 		puts "9. Exit this program"
 	end
 
