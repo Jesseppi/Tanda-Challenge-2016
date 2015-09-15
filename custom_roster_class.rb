@@ -4,17 +4,30 @@ class CustomRoster
 
 	def initialize(numberOfEmployees, customBudget)
 		@numberOfEmployees = numberOfEmployees
-		@customBudget = customBudget
+		@customBudget = customBudget.to_i
 		@CUSTOM_EMPLOYEES = []	
 		@CUSTOM_EMPLOYEES_WAGES = []
 		@CUSTOM_EMPLOYEES_REQUIRED_SHIFT = {}
 		@CUSTOM_EMPLOYEE_SHIFT_BLOCK_COST = {}
-		@CUSTOM_EMPLOYEES_ROLES = []
+		@CUSTOM_EMPLOYEES_ROLES = {}
 		@closest_to_budget = 0
 		@names_on_shift = []
 		@hours_worked = []
 		@roles_on_shift = []
 		setEmployeesDetails(@CUSTOM_EMPLOYEES, @CUSTOM_EMPLOYEES_WAGES, @CUSTOM_EMPLOYEES_REQUIRED_SHIFT,@CUSTOM_EMPLOYEE_SHIFT_BLOCK_COST, @CUSTOM_EMPLOYEES_ROLES)
+	end
+
+	def printAnyArray(array, objectDesc)
+		arrayLength = array.length
+		i = 0
+		loop do
+			printf " #{objectDesc}: #{array[i]}, ROLE:#{@CUSTOM_EMPLOYEES_ROLES[array[i]]}, HOURS WORKED:#{@CUSTOM_EMPLOYEES_REQUIRED_SHIFT[array[i]]} "
+			format = '#{objectDesc}: %s, ROLE: %s, HOURS WORKED: %d '
+			sprintf(format,array[i],@CUSTOM_EMPLOYEES_ROLES[array[i]],@CUSTOM_EMPLOYEES_REQUIRED_SHIFT[array[i]])
+			i+=1
+			puts
+			break if i == arrayLength
+		end
 	end
 
 	def setEmployeesDetails(employees, wages, shiftLength, blockCost, roles)
@@ -34,7 +47,8 @@ class CustomRoster
 			blockCost[employeeName] = (employeeBlockCost.to_i)
 			print "Please enter the employees role [ W = \"waiter\", KH = \"Kitchen Hand\", KHW = \"can do both\" ]: "
 			employeeRole = gets
-			roles.insert(i.to_i, employeeRole)
+			# roles.insert(i.to_i, employeeRole)
+			roles[employeeName]= (employeeRole)
 			puts
 
 
@@ -44,7 +58,7 @@ class CustomRoster
 
 	def getEmployeeDetails
 		for i in 0..@numberOfEmployees-1
-			print "EMPLOYEE: #{@CUSTOM_EMPLOYEES[i]}ROLE = #{@CUSTOM_EMPLOYEES_ROLES[i]}HOURLY WAGE = $#{@CUSTOM_EMPLOYEES_WAGES[i]}REQUIRED HOURS = #{@CUSTOM_EMPLOYEES_REQUIRED_SHIFT[i]}SHIFT BLOCK COST = $#{@CUSTOM_EMPLOYEE_SHIFT_BLOCK_COST[i]}"
+			print "EMPLOYEE: #{@CUSTOM_EMPLOYEES[i]}ROLE = #{@CUSTOM_EMPLOYEES_ROLES[i]}HOURLY WAGE = $#{@CUSTOM_EMPLOYEES_WAGES[i]}REQUIRED HOURS = #{@CUSTOM_EMPLOYEES_REQUIRED_SHIFT[@CUSTOM_EMPLOYEES[i]]}SHIFT BLOCK COST = $#{@CUSTOM_EMPLOYEE_SHIFT_BLOCK_COST[@CUSTOM_EMPLOYEES[i]]}"
 			puts
 		end			
 	end
@@ -69,7 +83,6 @@ class CustomRoster
   			puts v
   			r =  @CUSTOM_EMPLOYEES_ROLES[k]
   			h =  @CUSTOM_EMPLOYEES_REQUIRED_SHIFT[k]
-  			k =  @CUSTOM_EMPLOYEES[k]
     		remaining = numbers.drop(index+1)
     		
     		

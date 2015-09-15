@@ -207,12 +207,26 @@
       when 6
         print "How many employees do you have to enter?:"
         numberOfEmployees = Menu.getUserNumericalChoice(5,9)
-        customRoster = CustomRoster.new(numberOfEmployees,100)
+        print "What is your shift budget?:"
+        budget = gets
+        budget = budget.to_i
+        customRoster = CustomRoster.new(numberOfEmployees,budget)
         customRoster.getEmployeeDetails
+        blockCostArray = customRoster.instance_variable_get("@CUSTOM_EMPLOYEE_SHIFT_BLOCK_COST").clone
+        employeeNames = blockCostArray = customRoster.instance_variable_get("@CUSTOM_EMPLOYEES")
         puts
+        # print customRoster.instance_variable_get("@CUSTOM_EMPLOYEE_SHIFT_BLOCK_COST")
+        # print customRoster.instance_variable_get("@CUSTOM_EMPLOYEES")
+        # print customRoster.instance_variable_get("@CUSTOM_EMPLOYEES_ROLES")
         Menu.printBreakLine("*",40)
         puts
-        customRoster.createRosterSimple(customRoster(@CUSTOM_EMPLOYEE_SHIFT_BLOCK_COST),customRoster(@customBudget))
+        customRoster.createRosterSimple(customRoster.instance_variable_get("@CUSTOM_EMPLOYEE_SHIFT_BLOCK_COST"),budget)
+        print ("the closest employee roster to $#{budget} amounted to: ")
+        puts customRoster.instance_variable_get("@closest_to_budget")
+        # puts names_on_shift.length
+        # puts names_on_shift
+        customRoster.printAnyArray(customRoster.instance_variable_get("@names_on_shift"), "EMPLOYEE")
+        
         
 
  			when 9		
@@ -227,22 +241,24 @@
  	end
 
   # Running Code ----------------------------
- 	# Menu.printWelcomeText
- 	# timesheetMenu
-  customEmplopyees = CustomRoster.new(2,100) 
-  # print customEmplopyees.instance_variable_get("@CUSTOM_EMPLOYEES_ROLES")
-  # print customEmplopyees.instance_variable_get("@CUSTOM_EMPLOYEES_REQUIRED_SHIFT")
-  # print customEmplopyees.instance_variable_get("@CUSTOM_EMPLOYEES")
-  # print customEmplopyees.instance_variable_get("@CUSTOM_EMPLOYEES_WAGES")
-  blockCostArray = customEmplopyees.instance_variable_get("@CUSTOM_EMPLOYEE_SHIFT_BLOCK_COST")
-  print blockCostArray
-  customBudget = customEmplopyees.instance_variable_get("@customBudget")
-  # print customBudget
-  customEmplopyees.createRosterSimple(blockCostArray,customBudget)
-  print customEmplopyees.instance_variable_get("@closest_to_budget")
-  print customEmplopyees.instance_variable_get("@names_on_shift")
-  print customEmplopyees.instance_variable_get("@roles_on_shift")
-  print customEmplopyees.instance_variable_get("@hours_worked")
+ 	Menu.printWelcomeText
+ 	timesheetMenu
+
+
+  # customEmplopyees = CustomRoster.new(2,100) 
+  # # print customEmplopyees.instance_variable_get("@CUSTOM_EMPLOYEES_ROLES")
+  # # print customEmplopyees.instance_variable_get("@CUSTOM_EMPLOYEES_REQUIRED_SHIFT")
+  # # print customEmplopyees.instance_variable_get("@CUSTOM_EMPLOYEES")
+  # # print customEmplopyees.instance_variable_get("@CUSTOM_EMPLOYEES_WAGES")
+  # blockCostArray = customEmplopyees.instance_variable_get("@CUSTOM_EMPLOYEE_SHIFT_BLOCK_COST")
+  # print blockCostArray
+  # customBudget = customEmplopyees.instance_variable_get("@customBudget")
+  # # print customBudget
+  # customEmplopyees.createRosterSimple(blockCostArray,customBudget)
+  # print customEmplopyees.instance_variable_get("@closest_to_budget")
+  # print customEmplopyees.instance_variable_get("@names_on_shift")
+  # print customEmplopyees.instance_variable_get("@roles_on_shift")
+  # print customEmplopyees.instance_variable_get("@hours_worked")
 
   # customTest = CustomRoster.new(1,100)
   # customTest.getEmployeeDetails 
