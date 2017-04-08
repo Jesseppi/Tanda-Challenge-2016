@@ -1,20 +1,20 @@
-	require_relative 'menu_class'
+require_relative 'menu_class'
   require_relative 'custom_roster_class'
-  require 'facets/hash/except'
 
-  $EMPLOYEES = {
-                "Alex" => {"wage" => 17.79, "minShift" => 4, "shiftBlockCost" => 71.16, "EmployeeType" => "KH"},
-                "Jake" => {"wage" => 19.10, "minShift" => 5, "shiftBlockCost" => 95.50, "EmployeeType" => "KHW"},
-                "Tamsin" => {"wage" => 17.29, "minShift" => 4, "shiftBlockCost" => 69.16, "EmployeeType" => "KH"},
-                "Josh" => {"wage" => 18.47, "minShift" => 8, "shiftBlockCost" => 147.76, "EmployeeType" => "W"},
-                "Adam" => {"wage" => 17.29, "minShift" => 8, "shiftBlockCost" => 138.32, "EmployeeType" => "KHW"},
-                "Wayne" => {"wage" => 17.29, "minShift" => 5, "shiftBlockCost" => 86.45, "EmployeeType" => "KH"},
-                "Dave" => {"wage" => 17.29, "minShift" => 6, "shiftBlockCost" => 103.74, "EmployeeType" => "KH"},
-                "Bri" => {"wage" => 19.10, "minShift" => 9, "shiftBlockCost" => 171.90, "EmployeeType" => "W"},
-                "Scott" => {"wage" => 18.47, "minShift" => 4, "shiftBlockCost" => 73.88, "EmployeeType" => "W"},
-                "Marissa" =>  {"wage" => 20.13, "minShift" => 7, "shiftBlockCost" => 140.91, "EmployeeType" => "KHW"}
-                }
-	
+	$EMPLOYEES = ["Alex", "Jake", "Tasmin", "Josh", "Adam", "Wayne", "Dave", "Bri", "Scott", "Marissa"]
+	$EMPLOYEES_WAGES = [17.79, 19.10, 17.29, 18.47, 17.29, 17.29, 17.29, 19.10, 18.47, 20.13]
+	$EMPLOYEES_REQUIRED_SHIFT = [4,5,4,8,8,5,6,9,4,7]
+	$EMPLOYEE_SHIFT_BLOCK_COST = [71.16, 95.50, 69.16, 147.76, 138.32, 86.45, 103.74, 171.90, 73.88, 140.91]
+  $EMPLOYEE_TYPE = ["KH","KHW","KH","W","KHW","KH","KH","W","W","KHW"]
+
+	$ASSOCIATIVE_EMPLOYEE_TYPE = {"Alex" => "KH", "Jake" => "KHW", "Tasmin" => "KH", "Josh" => "W", "Adam" => "KHW", "Wayne" => "KH", "Dave" => "KH", "Bri" => "W", "Scott" => "W", "Marissa" => "KHW"}
+	$ASSOCIATIVE_EMPLOYEE_TYPE.default = "no such person"
+
+
+	$ASSOCIATIVE_EMPLOYEE_SHIFT_BLOCK_COST = {"Alex" => 71.16, "Jake" => 95.50, "Tasmin" => 69.16, "Josh" => 147.76, "Adam" => 138.32, "Wayne" => 86.45, "Dave" => 103.74, "Bri" => 171.90, "Scott" => 73.88, "Marissa" => 140.91}
+	$ASSOCIATIVE_EMPLOYEE_SHIFT_LENGTH = {"Alex" => 4, "Jake" => 5, "Tasmin" => 4, "Josh" => 8, "Adam" => 8, "Wayne" => 5, "Dave" => 6, "Bri" => 9, "Scott" => 4, "Marissa" => 7}
+	$ASSOCIATIVE_EMPLOYEE_SHIFT_BLOCK_COST_double = {"Alex" => 71.16, "Alex2" => 71.16, "Jake" => 95.50, "Jake2" => 95.50, "Tasmin" => 69.16, "Tasmin2" => 69.16, "Josh" => 147.76, "Josh2" => 147.76, "Adam" => 138.32, "Adam2" => 138.32, "Wayne" => 86.45, "Wayne2" => 86.45, "Dave" => 103.74, "Dave2" => 103.74, "Bri" => 171.90, "Bri2" => 171.90, "Scott" => 73.88, "Scott2" => 73.88, "Marissa" => 140.91, "Marissa2" => 140.91 }
+	$ASSOCIATIVE_EMPLOYEE_SHIFT_BLOCK_COST_triple = {"Alex" => 71.16, "Alex2" => 71.16, "Alex3" => 71.16, "Jake" => 95.50, "Jake2" => 95.50, "Jake3" => 95.50, "Tasmin" => 69.16, "Tasmin2" => 69.16, "Tasmin3" => 69.16, "Josh" => 147.76, "Josh2" => 147.76, "Josh3" => 147.76, "Adam" => 138.32, "Adam2" => 138.32, "Adam3" => 138.32, "Wayne" => 86.45, "Wayne2" => 86.45, "Wayne3" => 86.45, "Dave" => 103.74, "Dave2" => 103.74, "Dave3" => 103.74, "Bri" => 171.90, "Bri2" => 171.90, "Bri3" => 171.90, "Scott" => 73.88, "Scott2" => 73.88, "Scott3" => 73.88, "Marissa" => 140.91, "Marissa2" => 140.91, "Marissa3" => 140.91 }
 	$BUDGET = 800.00
 
 	$closest_to_budget = 0
@@ -24,9 +24,11 @@
 
 	def printStoredArrays
 		i = 0	
-		$EMPLOYEES.each do |key,value|
-			print  "EMPLOYEE: #{key} ROLE: #{value["EmployeeType"]}, HOURLY WAGE = $#{value["wage"]}, REQUIRED HOURS = #{value["minShift"]}, SHIFT BLOCK COST = $#{value["shiftBlockCost"]}"	
-			puts			
+		loop do
+			print " EMPLOYEE: #{$EMPLOYEES[i]} , ROLE: #{$EMPLOYEE_TYPE[i]}, HOURLY WAGE = $#{$EMPLOYEES_WAGES[i]}, REQUIRED HOURS = #{$EMPLOYEES_REQUIRED_SHIFT[i]}, SHIFT BLOCK COST = $#{$EMPLOYEE_SHIFT_BLOCK_COST[i]}"	
+			i+=1
+			puts
+			break if i==10
 		end	
 	end
 
@@ -39,16 +41,13 @@
 
 	def printAnyArray(array, objectDesc)
 		arrayLength = array.length
-    total = 0
 		i = 0
-		array.each do |key|   
-			print " #{objectDesc}: #{key}, ROLE:#{$EMPLOYEES[key]["EmployeeType"]}, HOURS WORKED:#{$EMPLOYEES[key]["minShift"]}, WAGE PAID:#{$EMPLOYEES[key]["shiftBlockCost"]}"
-      total += $EMPLOYEES[key]["shiftBlockCost"] 
+		loop do
+			print " #{objectDesc}: #{array[i]}, ROLE:#{$ASSOCIATIVE_EMPLOYEE_TYPE[array[i]]}, HOURS WORKED:#{$ASSOCIATIVE_EMPLOYEE_SHIFT_LENGTH[array[i]]} "
 			i+=1
 			puts
 			break if i == arrayLength
 		end
-    puts total
 	end
 
 	def checkRoleRatio(roles)
@@ -79,10 +78,10 @@
 	def createRosterSimple(numbers, budget, numbersAdded =[], namesAdded = [], rolesAdded = [], hoursWorked = [])
 
 		recursive_sum = numbersAdded.inject(0, :+)
-		  
+		
   		if recursive_sum > 0 && recursive_sum > 300 && recursive_sum <= budget
   					if recursive_sum > $closest_to_budget
-              $closest_to_budget = recursive_sum
+  						$closest_to_budget = recursive_sum
   						$names_on_shift = namesAdded
   						$roles_on_shift =  rolesAdded
   						$hours_worked = hoursWorked
@@ -91,9 +90,12 @@
   					return  						
   				end
 	
-  		  numbers.each_with_index do |(k,v), index|
-  			  remaining = numbers.drop(index+1)
-          createRosterSimple(remaining, budget, numbersAdded+[v], namesAdded +[k], rolesAdded + [$EMPLOYEES[k]["EmployeeType"]], hoursWorked + [$EMPLOYEES[k]["minShift"]])    		 	
+  		numbers.each_with_index do |(k,v),index|
+  			r =  $ASSOCIATIVE_EMPLOYEE_TYPE[k]
+  			h = $ASSOCIATIVE_EMPLOYEE_SHIFT_LENGTH[k]
+    		remaining = numbers.drop(index+1)
+    		
+    		createRosterSimple(remaining, budget, numbersAdded+[v], namesAdded + [k], rolesAdded + [r], hoursWorked + [h])    		 	
   		end
 	end	
 
@@ -126,15 +128,6 @@
   		end
 	end	
 
-  def stripHashToArray(hash)
-    stripHash = {}
-    hash.each do |key,value|
-      stripHash[key] = value["shiftBlockCost"]
-    end
-    return stripHash
-  end
-
-
 
 
  
@@ -159,9 +152,7 @@
  				puts
  				Menu.printBreakLine("*",40)
  				puts
-        h = stripHashToArray($EMPLOYEES)
-        puts h
- 				createRosterSimple(h,$BUDGET)
+ 				createRosterSimple($ASSOCIATIVE_EMPLOYEE_SHIFT_BLOCK_COST,$BUDGET)
  				print ("the closest employee roster to $#{$BUDGET} amounted to: ")
   			print $closest_to_budget
   			puts
@@ -217,8 +208,8 @@
         print "How many employees do you have to enter?:"
         numberOfEmployees = Menu.getUserNumericalChoice(5,9)
         print "What is your shift budget?:"
-        budget = Menu.getUserNumber(4000)
-        # budget = budget.to_i
+        budget = gets
+        budget = budget.to_i
         customRoster = CustomRoster.new(numberOfEmployees,budget)
         customRoster.getEmployeeDetails
         blockCostArray = customRoster.instance_variable_get("@CUSTOM_EMPLOYEE_SHIFT_BLOCK_COST").clone
@@ -252,52 +243,3 @@
   # Running Code ----------------------------
  	Menu.printWelcomeText
  	timesheetMenu
-
-
-  # customEmplopyees = CustomRoster.new(2,100) 
-  # # print customEmplopyees.instance_variable_get("@CUSTOM_EMPLOYEES_ROLES")
-  # # print customEmplopyees.instance_variable_get("@CUSTOM_EMPLOYEES_REQUIRED_SHIFT")
-  # # print customEmplopyees.instance_variable_get("@CUSTOM_EMPLOYEES")
-  # # print customEmplopyees.instance_variable_get("@CUSTOM_EMPLOYEES_WAGES")
-  # blockCostArray = customEmplopyees.instance_variable_get("@CUSTOM_EMPLOYEE_SHIFT_BLOCK_COST")
-  # print blockCostArray
-  # customBudget = customEmplopyees.instance_variable_get("@customBudget")
-  # # print customBudget
-  # customEmplopyees.createRosterSimple(blockCostArray,customBudget)
-  # print customEmplopyees.instance_variable_get("@closest_to_budget")
-  # print customEmplopyees.instance_variable_get("@names_on_shift")
-  # print customEmplopyees.instance_variable_get("@roles_on_shift")
-  # print customEmplopyees.instance_variable_get("@hours_worked")
-
-  # customTest = CustomRoster.new(1,100)
-  # customTest.getEmployeeDetails 
-
-  	# createRosterSimple(@ASSOCIATIVE_EMPLOYEE_SHIFT_BLOCK_COST,@BUDGET)
-  	# puts("the closest combination of hours to budget amounted to: ")
-  	# print "$"
-  	# print $closest_to_budget
-  	
-  	# puts
-  	# print $names_on_shift
-  	# puts
-  	# print  $roles_on_shift  	
-  	# puts
-  	# print $hours_worked
-
-  	# associative_recursive_addition(@ASSOCIATIVE_EMPLOYEE_SHIFT_BLOCK_COST_triple,@BUDGET)
-  	# puts("the closest combination to budget amounted to: ")
-  	# print $closest_to_budget
-  	# puts
-  	# print $names_on_shift
-  	# puts
-
-
-  	# sample array to test check role ratio
-  	# @sample_roles = ["KH", "KH", "W", "W", "W", "W","W"]
-
-
-
-
-
-
-

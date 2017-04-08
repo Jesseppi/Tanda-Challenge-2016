@@ -38,6 +38,25 @@ class Menu
 		return userChoice.to_i
 	end
 
+		def self.getUserNumber(maxChoice)
+		userChoice = 0
+		puts
+		errorMessage = "Your choice is invalid, please enter a number corresponding to number."
+		while(userChoice.to_i > maxChoice || userChoice.to_i < 0)
+			puts "Please enter the number of your choice: "
+			begin
+				userChoice = gets
+			rescue
+				puts errorMessage
+				userChoice = 0
+			end
+			if (userChoice.to_i > maxChoice || userChoice.to_i < 0)
+				puts errorMessage
+			end					
+		end
+		return userChoice.to_i
+	end
+
 	def self.printBreakLine(symbol,repititions)
   		$i = 0
   		loop do
